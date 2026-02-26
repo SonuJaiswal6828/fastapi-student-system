@@ -53,12 +53,12 @@ fastapi-student-system/
 git clone https://github.com/<your-username>/fastapi-student-system.git
 cd fastapi-student-system
 
-###2️⃣ Create virtual environment & install dependencies
+### 2️⃣ Create virtual environment & install dependencies
 python -m venv venv
 venv\Scripts\activate    # Windows
 pip install fastapi uvicorn mysql-connector-python python-dotenv
 
-###3️⃣ Create .env file
+### 3️⃣ Create .env file
 copy .env.example .env   # Windows
 
 Update .env with your DB credentials:
@@ -70,7 +70,7 @@ DB_NAME=your_db_name
 
 ⚠️ Do NOT commit .env file to GitHub. It contains secrets.
 
-###4️⃣ Create MySQL table
+### 4️⃣ Create MySQL table
 CREATE TABLE students (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE students (
   result VARCHAR(10) NOT NULL
 );
 
-###5️⃣ Run the server
+### 5️⃣ Run the server
 uvicorn app.main:app --reload
 
 Server will start at:
@@ -90,13 +90,13 @@ Swagger docs:
 
 http://127.0.0.1:8000/docs
 
-###📌 API Endpoints
-Method	Endpoint	Description
-GET	/students	Get all students
-GET	/students/{id}	Get student by ID
-POST	/students	Create new student
-PUT	/students/{id}	Update student
-DELETE	/students/{id}	Delete student
+### 📌 API Endpoints
+|Method |	Endpoint	|Description|                           
+GET	|/students|	Get all students  |                            
+GET	|/students/{id}|	Get student by ID |                    
+POST	|/students|	Create new student|                      
+PUT|	/students/{id}|	Update student|                    
+DELETE|	/students/{id}	|Delete student|                  
 
 ##🤝 Contributing
 
