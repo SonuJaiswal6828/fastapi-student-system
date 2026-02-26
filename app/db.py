@@ -1,13 +1,12 @@
-import mysql.connector 
+import os
+import mysql.connector
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Sonu@1234",
-        database="Sonu",
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME", "Sonu"),
         autocommit=False,
         connection_timeout=10
-)
-
-
+    )
