@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.db import get_db
-from app.models import Student
+from app.models import Student, StudentUpdate
 
 router = APIRouter(prefix="/students", tags=["students"])
 
@@ -9,7 +9,7 @@ def all_students():
     try:
         db = get_db()
         cursor = db.cursor()
-        cursor.execute("select name, age, marks, result from students order by id asc")
+        cursor.execute("select id, name, age, marks, result from students order by id asc")
         students = cursor.fetchall()
 
         return {"Students": students}
@@ -120,6 +120,52 @@ def delete_students(student_id: int):
         return {
             "message": f"Student deleted with id {student_id}"
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cursor.close()
+        db.close()
+
+
+@router.patch("/{student_id}")
+def partial_update_student(student_id: int, student: StudentUpdate):
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+
+        fields = []
+        values = []
+
+        if student.name is not None:
+            fields.append("name=%s")
+            values.append(student.name)
+
+        if student.age is not None:
+            fields.append("age=%s")
+            values.append(student.age)
+
+        if student.marks is not None:
+            fields.append("marks=%s")
+            values.append(student.marks)
+            fields.append("result=%s")
+            values.append("Pass" if student.marks >= 40 else "Fail")
+
+        if not fields:
+            raise HTTPException(status_code=400, detail="No fields to update")
+
+        sql = f"UPDATE students SET {', '.join(fields)} WHERE id=%s"
+        values.append(student_id)
+
+        cursor.execute(sql, tuple(values))
+        db.commit()
+
+        if cursor.rowcount == 0:
+            cursor.close()
+            raise HTTPException(status_code=404, detail="Student not found")
+
+        return {"message": "Student partially updated"}
     except HTTPException:
         raise
     except Exception as e:

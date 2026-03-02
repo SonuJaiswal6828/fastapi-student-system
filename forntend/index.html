@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Manager — refined UI</title>
+    <!-- Tailwind via CDN (design only, no functional changes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- optional icons for better visual (no JS impact) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* tiny custom touch: smooth transitions, no logic touched */
+        .hover-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+        }
+        /* keep exactly the same functionality – only aesthetics */
+    </style>
+</head>
+<body class="bg-slate-100 font-sans antialiased p-5 md:p-8 flex justify-center min-h-screen">
+
+    <!-- main card: bigger, softer, with subtle backdrop (pure design) -->
+    <div class="w-full max-w-5xl bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/30 p-6 md:p-8 my-4">
+
+        <!-- header area with icon + improved typography (no JS) -->
+        <div class="flex items-center gap-3 border-b border-slate-200 pb-5 mb-6">
+            <div class="bg-indigo-600 text-white p-3 rounded-2xl shadow-md">
+                <i class="fas fa-graduation-cap text-2xl"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-light text-slate-800">
+                <span class="font-semibold text-indigo-700">Student</span> Manager
+            </h1>
+            <span class="ml-auto bg-indigo-50 text-indigo-700 px-4 py-1.5 rounded-full text-sm font-medium border border-indigo-200 hidden sm:inline-block">
+                <i class="far fa-star mr-1"></i> clean design
+            </span>
+        </div>
+
+        <!-- ADD STUDENT SECTION – improved card, same JS -->
+        <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-200 mb-8 hover-card">
+            <h2 class="text-xl font-semibold text-slate-700 flex items-center gap-2 mb-4">
+                <i class="fas fa-plus-circle text-indigo-500"></i> Add student
+            </h2>
+            <!-- input group: labels + better spacing (JS untouched) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Full name</label>
+                    <input type="text" id="name" placeholder="e.g. Emma Watson"
+                           class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 bg-white shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Age</label>
+                    <input type="number" id="age" placeholder="years"
+                           class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 bg-white shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Marks</label>
+                    <input type="number" id="marks" placeholder="0–100"
+                           class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 bg-white shadow-sm">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="addStudent()"
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-save"></i> Add student
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDENT LIST + LOAD BUTTON – design refresh -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-8 shadow-sm hover-card">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+                <h2 class="text-xl font-semibold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-table-list text-indigo-500"></i> All students
+                </h2>
+                <button onclick="getStudents()"
+                        class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-medium px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
+                    <i class="fas fa-rotate-right"></i> Load students
+                </button>
+            </div>
+
+            <!-- scrollable table with clean borders -->
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider">
+                        <tr>
+                            <th class="px-5 py-4 text-left font-semibold">ID</th>
+                            <th class="px-5 py-4 text-left font-semibold">Name</th>
+                            <th class="px-5 py-4 text-left font-semibold">Age</th>
+                            <th class="px-5 py-4 text-left font-semibold">Marks</th>
+                            <th class="px-5 py-4 text-left font-semibold">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody" class="divide-y divide-slate-200 text-slate-700">
+                        <!-- your original JS will populate this exactly as before -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TWO COLUMN LAYOUT for delete + output (design only) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <!-- delete card with soft rose gradient (design unchanged functionality) -->
+            <div class="bg-gradient-to-r from-rose-50 to-red-50 rounded-2xl p-6 border border-rose-200 hover-card">
+                <h2 class="text-xl font-semibold text-slate-700 flex items-center gap-2 mb-4">
+                    <i class="fas fa-trash-alt text-rose-500"></i> Delete student
+                </h2>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-grow">
+                        <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Student ID</label>
+                        <input type="number" id="deleteId" placeholder="e.g. 101"
+                               class="w-full px-4 py-3 rounded-xl border border-rose-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 bg-white shadow-sm">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="deleteStudent()"
+                                class="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white font-medium px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                <p class="text-xs text-rose-600 mt-3 flex items-center gap-1">
+                    <i class="fas fa-info-circle"></i> ID is required — permanent removal
+                </p>
+            </div>
+
+            <!-- output / console card - dark theme, same js output -->
+            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 hover-card">
+                <h2 class="text-xl font-semibold text-white flex items-center gap-2 mb-3">
+                    <i class="fas fa-terminal text-emerald-400"></i> Output
+                </h2>
+                <pre id="output" class="bg-slate-900 text-slate-300 rounded-xl p-4 font-mono text-sm h-32 overflow-y-auto border border-slate-700 whitespace-pre-wrap"></pre>
+                <p class="text-xs text-slate-400 mt-3 flex items-center gap-1">
+                    <i class="far fa-clock"></i> last action log
+                </p>
+            </div>
+        </div>
+
+        <!-- subtle footer (pure design) -->
+        <div class="text-center text-xs text-slate-400 border-t border-slate-200 pt-5 mt-4">
+            <i class="far fa-heart text-rose-300 mr-1"></i> design refresh · your original JS untouched
+        </div>
+    </div>
+
+    <!-- ========== YOUR EXACT JAVASCRIPT (KEPT 100% ORIGINAL, ONLY DESIGN CHANGES) ========== -->
+    <script src="script.js"></script>
+</body>
+</html>
